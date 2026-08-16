@@ -1,4 +1,5 @@
 package com.app.twitterapi.controller;
+import com.app.twitterapi.dto.TweetRequest;
 import com.app.twitterapi.entity.Like;
 import com.app.twitterapi.entity.Retweet;
 import com.app.twitterapi.entity.Tweet;
@@ -98,16 +99,17 @@ class TweetControllerTest {
         List<Retweet> retweets = new LinkedList<>();
         tweet.setLikes(likes);
         tweet.setRetweets(retweets);
-        when(tweetService.create(tweet)).thenReturn(tweet);
+        TweetRequest tweetRequest = new TweetRequest(1L, tweet);
+        when(tweetService.create(tweetRequest)).thenReturn(tweet);
         mockMvc.perform(post("/tweet")
                         .with(csrf())
                         .with(user("user@gmail.com"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonToString(tweet))
+                .content(jsonToString(tweetRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("hi"));
-        verify(tweetService).create(tweet);
+        verify(tweetService).create(tweetRequest);
     }
     @Test
     void updateTweet() throws Exception {

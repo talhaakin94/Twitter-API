@@ -37,6 +37,7 @@ public class CommentServiceImp implements CommentService {
         comment.setTweet(optionalTweet.get());
         comment.setMessage(message);
         optionalUser.get().getComments().add(comment);
+        optionalTweet.get().getComments().add(comment);
         return commentRepository.save(comment);
     }
     @Override
@@ -63,6 +64,7 @@ public class CommentServiceImp implements CommentService {
                 throw new RuntimeException("unauthorized user");
             }
             optional.get().getUser().getComments().remove(optional.get());
+            optional.get().getTweet().getComments().remove(optional.get());
             commentRepository.delete(optional.get());
             return optional.get();
         }

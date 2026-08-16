@@ -5,12 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,42 +27,28 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Tweet> tweets;
+    private List<Tweet> tweets = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user")
-    private List<Retweet> retweets;
+    private List<Retweet> retweets = new ArrayList<>();
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user")
-    private List<Like> likes;
+    private List<Like> likes = new ArrayList<>();
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
+    private Set<Role> roles = new HashSet<>();
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
     @Override
-    public @Nullable String getPassword() {
-        return "";
+    @NotBlank
+    public String getPassword() {
+        return password;
     }
     @Override
+    @NotBlank
     public String getUsername() {
-        return "";
+        return email;
     }
 }

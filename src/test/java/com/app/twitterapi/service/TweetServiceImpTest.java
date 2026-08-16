@@ -1,6 +1,7 @@
 package com.app.twitterapi.service;
 import com.app.twitterapi.dao.TweetRepository;
 import com.app.twitterapi.dao.UserRepository;
+import com.app.twitterapi.dto.TweetRequest;
 import com.app.twitterapi.entity.Tweet;
 import com.app.twitterapi.entity.User;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +50,8 @@ class TweetServiceImpTest {
         user.setEmail("user@gmail.com");
         user.setPassword("1234");
         tweet.setUser(user);
-        given(tweetRepository.findById(1L)).willReturn(Optional.of(tweet));
-        tweetService.create(tweet);
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        tweetService.create(new TweetRequest(1L, tweet));
         verify(tweetRepository).save(tweet);
     }
     @Test

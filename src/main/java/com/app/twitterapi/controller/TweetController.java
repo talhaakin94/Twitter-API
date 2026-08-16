@@ -1,4 +1,5 @@
 package com.app.twitterapi.controller;
+import com.app.twitterapi.dto.TweetRequest;
 import com.app.twitterapi.dto.TweetResponse;
 import com.app.twitterapi.entity.Tweet;
 import com.app.twitterapi.service.TweetService;
@@ -32,9 +33,9 @@ public class TweetController {
     }
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public TweetResponse postTweet(@RequestBody Tweet tweet) {
-        tweetService.create(tweet);
-        return new TweetResponse(tweet.getUser().getName(), tweet.getMessage(), tweet.getLikes().size(), tweet.getRetweets().size());
+    public TweetResponse postTweet(@RequestBody TweetRequest tweetRequest) {
+        tweetService.create(tweetRequest);
+        return new TweetResponse(tweetRequest.tweet().getUser().getName(), tweetRequest.tweet().getMessage(), tweetRequest.tweet().getLikes().size(), tweetRequest.tweet().getRetweets().size());
     }
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

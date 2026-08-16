@@ -34,6 +34,7 @@ public class RetweetServiceImp implements RetweetService{
         retweet.setTweet(optionalTweet.get());
         retweet.setUser(optionalUser.get());
         optionalUser.get().getRetweets().add(retweet);
+        optionalTweet.get().getRetweets().add(retweet);
         return retweetRepository.save(retweet);
     }
     @Override
@@ -41,6 +42,7 @@ public class RetweetServiceImp implements RetweetService{
         Optional<Retweet> optional = retweetRepository.findById(id);
         if(optional.isPresent()) {
             optional.get().getUser().getRetweets().remove(optional.get());
+            optional.get().getTweet().getRetweets().remove(optional.get());
             retweetRepository.delete(optional.get());
             return optional.get();
         }

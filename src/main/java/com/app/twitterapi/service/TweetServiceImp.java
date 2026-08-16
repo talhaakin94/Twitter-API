@@ -1,6 +1,7 @@
 package com.app.twitterapi.service;
 import com.app.twitterapi.dao.TweetRepository;
 import com.app.twitterapi.dao.UserRepository;
+import com.app.twitterapi.dto.TweetRequest;
 import com.app.twitterapi.entity.Tweet;
 import com.app.twitterapi.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,18 @@ public class TweetServiceImp implements TweetService {
         this.userRepository = userRepository;
     }
     @Override
-    public Tweet create(Tweet tweet) {
-        tweetRepository.save(tweet);
-        Optional<Tweet> optional = tweetRepository.findById(tweet.getId());
-        if(optional.isPresent()) {
-            return tweet;
+    public Tweet create(TweetRequest tweetRequest) {
+        if(tweetRequest.userId() == null || tweetRequest.tweet() == null) {
+            throw new RuntimeException("invalid request");
         }
-        throw new RuntimeException("tweet not found");
+        Optional<User> optional = userRepository.findById(tweetRequest.userId());
+        if(optional.isEmpty()) {
+            throw new RuntimeException("user not found");
+        }
+        Tweet tweet = tweetRequest.tweet();
+        tweet.setUser(optional.get());
+        tweet.getUser().getTweets().add(tweet);
+        return tweetRepository.save(tweet);
     }
     @Override
     public Tweet findById(Long id){

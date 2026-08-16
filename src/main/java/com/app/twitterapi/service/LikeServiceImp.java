@@ -25,7 +25,7 @@ public class LikeServiceImp implements LikeService {
         Optional<Tweet> optionalTweet = tweetRepository.findById(tweetId);
         Optional<User> optionalUser = userRepository.findById(userId);
         if(optionalTweet.isEmpty()) {
-            throw new RuntimeException("tweed not found");
+            throw new RuntimeException("tweet not found");
         }
         if(optionalUser.isEmpty()) {
             throw new RuntimeException("user not found");
@@ -34,6 +34,7 @@ public class LikeServiceImp implements LikeService {
         like.setTweet(optionalTweet.get());
         like.setUser(optionalUser.get());
         optionalUser.get().getLikes().add(like);
+        optionalTweet.get().getLikes().add(like);
         likeRepository.save(like);
         return like.getTweet();
     }
