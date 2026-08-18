@@ -21,6 +21,10 @@ public class TweetServiceImp implements TweetService {
         this.userRepository = userRepository;
     }
     @Override
+    public List<Tweet> findAll() {
+        return tweetRepository.findAll();
+    }
+    @Override
     public Tweet create(TweetRequest tweetRequest) {
         if(tweetRequest.userId() == null || tweetRequest.tweet() == null) {
             throw new RuntimeException("invalid request");

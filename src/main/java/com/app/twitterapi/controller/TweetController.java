@@ -20,6 +20,10 @@ public class TweetController {
     public TweetController(TweetService tweetService) {
         this.tweetService = tweetService;
     }
+    @GetMapping("")
+    public List<TweetResponse> findAll() {
+        return tweetService.findAll().stream().map(tweet -> new TweetResponse(tweet.getUser().getName(), tweet.getMessage(), tweet.getLikes().size(), tweet.getRetweets().size())).toList();
+    }
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TweetResponse getById(@Positive @PathVariable Long id) {

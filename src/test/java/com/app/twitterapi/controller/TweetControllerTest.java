@@ -31,6 +31,32 @@ class TweetControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Test
+    void findAll() throws Exception {
+        Tweet tweet = new Tweet();
+        tweet.setId(1L);
+        tweet.setMessage("hi");
+        User user = new User();
+        user.setId(1L);
+        user.setName("user");
+        user.setEmail("user@gmail.com");
+        user.setPassword("1234");
+        tweet.setUser(user);
+        List<Like> likes = new LinkedList<>();
+        List<Retweet> retweets = new LinkedList<>();
+        tweet.setLikes(likes);
+        tweet.setRetweets(retweets);
+        List<Tweet> tweets = new ArrayList<>();
+        tweets.add(tweet);
+        when(tweetService.findAll()).thenReturn(tweets);
+        mockMvc.perform(get("/tweet")
+                        .with(csrf())
+                        .with(user("user@gmail.com"))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].message").value("hi"));
+        verify(tweetService).findAll();
+    }
+    @Test
     void getById() throws Exception {
         Tweet tweet = new Tweet();
         tweet.setId(1L);
@@ -49,8 +75,6 @@ class TweetControllerTest {
         mockMvc.perform(get("/tweet/{id}", 1L)
                         .with(csrf())
                         .with(user("user@gmail.com"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonToString(tweet))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("hi"));
@@ -77,8 +101,6 @@ class TweetControllerTest {
         mockMvc.perform(get("/tweet/user/{userId}", 1L)
                         .with(csrf())
                         .with(user("user@gmail.com"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonToString(tweets))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].message").value("hi"));

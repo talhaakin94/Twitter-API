@@ -39,6 +39,20 @@ class TweetServiceImpTest {
         tweetRepository.deleteAll();
     }
     @Test
+    @DisplayName("find all tweets")
+    void findAll() {
+        Tweet tweet = new Tweet();
+        tweet.setId(1L);
+        tweet.setMessage("hi");
+        User user = new User();
+        user.setId(1L);
+        user.setName("user");
+        user.setEmail("user@gmail.com");
+        user.setPassword("1234");
+        tweet.setUser(user);
+        tweetService.findAll();
+    }
+    @Test
     @DisplayName("create a tweet")
     void create() {
         Tweet tweet = new Tweet();
