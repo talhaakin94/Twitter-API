@@ -34,7 +34,7 @@ public class User implements UserDetails {
     private List<Retweet> retweets = new ArrayList<>();
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user")
     private List<Like> likes = new ArrayList<>();
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
     @Override

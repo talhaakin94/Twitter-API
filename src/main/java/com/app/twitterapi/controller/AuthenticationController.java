@@ -1,4 +1,5 @@
 package com.app.twitterapi.controller;
+import com.app.twitterapi.dto.LoginRequest;
 import com.app.twitterapi.dto.RegisterRequest;
 import com.app.twitterapi.entity.User;
 import com.app.twitterapi.service.AuthenticationService;
@@ -20,5 +21,9 @@ public class AuthenticationController {
     @PostMapping("/register")
     public User register(@Valid @RequestBody RegisterRequest registerRequest) {
         return authenticationService.register(registerRequest.name(), registerRequest.email(), registerRequest.password());
+    }
+    @PostMapping("/login")
+    public User login(@Valid @RequestBody LoginRequest loginRequest) {
+        return authenticationService.login(loginRequest.email(), loginRequest.password());
     }
 }
