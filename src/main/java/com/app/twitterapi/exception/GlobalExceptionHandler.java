@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleException(Exception exception) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleException(RuntimeException runtimeException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(runtimeException.getMessage());
     }
 }

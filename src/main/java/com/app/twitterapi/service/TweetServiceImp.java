@@ -83,4 +83,8 @@ public class TweetServiceImp implements TweetService {
         }
         throw new RuntimeException("tweet not found");
     }
+    @Override
+    public List<Tweet> findAllReact() {
+        return tweetRepository.findAll();
+    }
 }

@@ -13,11 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -77,6 +81,9 @@ class LikeServiceImpTest {
         like.setUser(user);
         List<Like> likes = new ArrayList<>();
         user.setLikes(likes);
+        Authentication authentication = mock(Authentication.class);
+        given(authentication.getName()).willReturn("user@gmail.com");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         given(likeRepository.findByTweetIdAndUserId(1L, 1L)).willReturn(Optional.of(like));
         likeService.disLike(1L, 1L);
         verify(likeRepository).delete(like);

@@ -80,7 +80,6 @@ class CommentServiceImpTest {
         comment.setTweet(tweet);
         comment.setUser(user);
         comment.setId(1L);
-        comment.setMessage("bye");
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
         commentService.update(1L, "welcome");
         verify(commentRepository).save(comment);
@@ -101,8 +100,6 @@ class CommentServiceImpTest {
         comment.setTweet(tweet);
         comment.setUser(user);
         comment.setId(1L);
-        List<Comment> comments = new ArrayList<>();
-        user.setComments(comments);
         Authentication authentication = mock(Authentication.class);
         given(authentication.getName()).willReturn("user@gmail.com");
         SecurityContextHolder.getContext().setAuthentication(authentication);

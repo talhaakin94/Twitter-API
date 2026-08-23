@@ -1,7 +1,7 @@
 package com.app.twitterapi.controller;
-import com.app.twitterapi.dto.TweetRequest;
-import com.app.twitterapi.dto.TweetResponse;
+import com.app.twitterapi.dto.*;
 import com.app.twitterapi.entity.Tweet;
+import com.app.twitterapi.service.RetweetService;
 import com.app.twitterapi.service.TweetService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -16,9 +16,11 @@ import java.util.List;
 @RequestMapping("/tweet")
 public class TweetController {
     private final TweetService tweetService;
+    private final RetweetService retweetService;
     @Autowired
-    public TweetController(TweetService tweetService) {
+    public TweetController(TweetService tweetService, RetweetService retweetService) {
         this.tweetService = tweetService;
+        this.retweetService = retweetService;
     }
     @GetMapping("")
     public List<TweetResponse> findAll() {
@@ -52,5 +54,21 @@ public class TweetController {
     public TweetResponse deleteTweet(@Positive @PathVariable Long id) {
         Tweet tweet = tweetService.deleteTweet(id);
         return new TweetResponse(tweet.getUser().getName(), tweet.getMessage(), tweet.getLikes().size(), tweet.getRetweets().size());
+    }
+    @GetMapping("/react/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TweetResponseReact> findAllReact(@Positive @PathVariable Long userId) {
+        return tweetService.findAll().stream().map(tweet -> new TweetResponseReact(
+                tweet.getId(),
+                tweet.getUser().getName(),
+                tweet.getMessage(),
+                tweet.getLikes().size(),
+                tweet.getRetweets().size(),
+                tweet.getLikes().stream().anyMatch(like ->
+                        like.getUser().getId().equals(userId)),
+                retweetService.findByTweetIdAndUserId(tweet.getId(), userId) == null ? null : retweetService.findByTweetIdAndUserId(tweet.getId(), userId).getId(),
+                retweetService.findByTweetIdAndUserId(tweet.getId(), userId) != null,
+                tweet.getComments().stream().map(comment -> new CommentResponseReact(
+                        comment.getId(), comment.getMessage(), comment.getUser().getName())).toList())).toList();
     }
 }

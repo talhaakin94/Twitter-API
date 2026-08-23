@@ -13,12 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -79,6 +82,9 @@ class RetweetServiceImpTest {
         retweet.setId(1L);
         List<Retweet> retweets = new ArrayList<>();
         user.setRetweets(retweets);
+        Authentication authentication = mock(Authentication.class);
+        given(authentication.getName()).willReturn("user@gmail.com");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         given(retweetRepository.findById(1L)).willReturn(Optional.of(retweet));
         retweetService.delete(1L);
         verify(retweetRepository).delete(retweet);

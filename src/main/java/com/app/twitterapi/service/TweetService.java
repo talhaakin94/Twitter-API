@@ -10,4 +10,5 @@ public interface TweetService {
     List<Tweet> listByUserId(Long userId);
     Tweet updateTweet(Long id, String message);
     Tweet deleteTweet(Long id);
+    List<Tweet> findAllReact();
 }
