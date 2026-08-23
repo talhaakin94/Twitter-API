@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -27,11 +26,11 @@ public class AuthenticationService {
     }
     public User register(String name, String email, String password) {
         String encodedPassword = passwordEncoder.encode(password);
-        Optional<Role> optional = roleRepository.findByCode("USER");
-        Role role = new Role();
-        if(optional.isPresent()) {
-            role = roleRepository.findByCode(optional.get().getCode()).orElseThrow();
-        }
+        Role role = roleRepository.findByCode("USER").orElseGet(() -> {
+            Role newRole = new Role();
+            newRole.setCode("USER");
+            return roleRepository.save(newRole);
+        });
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         User user = new User();
